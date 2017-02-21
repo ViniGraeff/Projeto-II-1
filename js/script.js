@@ -1,4 +1,4 @@
-var server = "http://192.168.1.171:3000/product";
+var server = "http://192.168.1.171:3000/product/";
 
 function clearTable(){
 	$("#rowsTable").html("");
@@ -8,16 +8,14 @@ function createTable(){
 	clearTable();
 	$.get(server, function(data) {
 		for(var i=0; i<data.length; i++){
-			var valor = data[i].valor
-			var valorString = valueToString(valor);
 			$("#rowsTable").append("<tr data-id="+data[i].id+" >"+
 				"<td>"+data[i].id+"</td>"+
 				"<td>"+data[i].nome+"</td>"+
-				"<td>R$ "+valorString+"</td>"+
+				"<td>R$ "+valueToString(data[i].valor)+"</td>"+
 				"<td>"+data[i].status+"</td>"+
 				"<td>"+data[i].estoque+"</td>"+
-				"<td class='table-option'><button data-toggle='modal' data-target='#data' class='edit'><span class='glyphicon glyphicon-pencil'></span></button></td>"+
-				"<td class='table-option'><button data-toggle='modal' data-target='#delete' class='del'><span class='glyphicon glyphicon-trash'></span></button></td></tr>");
+				"<td class='table-option'><button data-toggle='modal' data-target='#dataModal' class='editBtn'><span class='glyphicon glyphicon-pencil'></span></button></td>"+
+				"<td class='table-option'><button data-toggle='modal' data-target='#deleteModal' class='delBtn'><span class='glyphicon glyphicon-trash'></span></button></td></tr>");
 		}
 	});
 }
@@ -27,51 +25,84 @@ function valueToString(valor){
 	return valor;
 }
 
-function actions(){
-	$("#addBtn").click(function(){
-		$("#titleModal").html("Adicionando Produto");
-	});
-	$("#rowsTable").on('click', '.edit', function(){
-		$("#titleModal").html("Editando Produto");
-	});
+function valueToNumber(){
+	var valor = $("#valor").val();
+	valor = Number(valor.replace(",", ".")).toFixed(2);
+	return valor;
 }
 
 function getId(){
-	$("#rowsTable").on('click', '.del', function(){
-		var id = $(this).parents('tr').data('id');
-		setIdModalDel(id);
-	});
-	$("#rowsTable").on('click', '.edit', function(){
-		var id = $(this).parents('tr').data('id');
-		modalEdit(id);
-		setIdModalEdit(id);
-	});
+	
 }
 
 function setIdModalDel(id){
-	$("#delete").data('item', id);
+	$("#deleteModal").data('item', id);
 }
 
 function setIdModalEdit(id){
-	$("#data").data('item', id);
+	$("#dataModal").data('item', id);
 }
 
-function modalEdit(id){
-	$.get(server+"/"+id, function(data) {
-		var valor = data.valor;
-		var valorString = valueToString(valor);
+function inputsModalEdit(id){
+	$.get(server+id, function(data) {
 		$("#nome").val(data.nome);
-		$("#valor").val(valorString);
+		$("#valor").val(valueToString(data.valor));
 		$("#status").val(data.status);
 		$("#estoque").val(data.estoque);
 	});
 }
 
+function inputsModalAdd(){
+	$("#nome, #valor, #estoque").val("");
+	$("#status").val("A");
+}
+
+function editJson(id){
+	$.ajax({
+		type: 'PUT',
+		url: server+id,
+		data:{
+			nome: $("#nome").val(),
+			valor: valueToNumber(),
+			status: $("#status").val(),
+			estoque: $("#estoque").val()				
+		},
+		success: function(){
+			createTable();
+		}
+	});
+}
+
+function actions(){
+	$("#addBtn").click(function(){
+		$("#titleModal").html("Adicionando Produto");
+		inputsModalAdd();
+	});
+	$("#rowsTable").on('click', '.delBtn', function(){
+		var id = $(this).parents('tr').data('id');
+		setIdModalDel(id);
+	});
+	$("#rowsTable").on('click', '.editBtn', function(){
+		$("#titleModal").html("Editando Produto");
+		var id = $(this).parents('tr').data('id');
+		setIdModalEdit(id);
+		inputsModalEdit(id);
+	});
+	// $("#saveBtn").click(function(){
+	// 	if($("#saveBtn")){
+	// 		editJson($("#dataModal").data("item"));
+	// 	}else{
+
+	// 	}
+	// });
+	// $('#selectStatus').change(function(){
+	// 	createTable();
+	// });
+}
+
 $(document).ready(function(){
 	actions();
 	createTable();
-	getId();
-
 });
 
 // function tabela(){

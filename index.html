@@ -24,8 +24,8 @@
 								<input id="campoBusca" type="text" class="form-control" placeholder="Busca de Itens">
 							</div>
 							<a class="btn btn-default" id="buscaBtn"><span class="glyphicon glyphicon-search"></span></a> -->
-					        <select id="listaStatus" name="listaStatus" class="form-control">
-								<option value="AI" selected="selected">Status</option>
+					        <select id="selectStatus" name="listaStatus" class="form-control">
+								<option value="AI" selected="selected">Ativos e Inativos</option>
 						    	<option value="A">Ativo</option>
 						    	<option value="I">Inativo</option>
 						    </select>
@@ -51,11 +51,11 @@
 				</thead>
 				<tbody id="rowsTable"></tbody>
 			</table>
-			<div class="add"><button data-toggle='modal' data-target='#data' id="addBtn"><span class="glyphicon glyphicon-plus"></span></button></div>
+			<div class="add"><button data-toggle='modal' data-target='#dataModal' id="addBtn"><span class="glyphicon glyphicon-plus"></span></button></div>
 		</div>
 
 		<!-- Modal Editar e Adicionar -->
-		<div class="modal fade" id="data" role="dialog" data-item="">
+		<div class="modal fade" id="dataModal" role="dialog" data-item="">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -63,7 +63,7 @@
 	         			<h4 class="modal-title" id="titleModal">Dados do Produto</h4>
 		        	</div>
 		        	<div class="modal-body">
-		         		<form>
+		         		<form id="formModal">
 					    	<div class="form-group">
 					     		<label for="nome">Nome do Produto:</label>
 					     		<input required="required" type="text" class="form-control" id="nome" placeholder="">
@@ -86,8 +86,8 @@
 					     		<label for="estoque">Estoque:</label>
 					     		<input required="required" type="number" class="form-control" id="estoque" placeholder="">
 					    	</div>
-					    	<button type="submit" id="salvar" class="btn btn-default">Salvar</button>
-					    	<input type="reset" value="Limpar Dados" class="btn btn-default">
+					    	<input id="saveBtn" class="btn btn-default col-md-2" value="Salvar" data-dismiss="modal">
+					    	<input type="reset" class="btn btn-default" value="Limpar Dados">
 				  		</form>
 		        	</div>
 	    		</div>
@@ -95,7 +95,7 @@
 		</div>
 
 		<!-- Modal Excluir -->
-		<div class="modal fade" id="delete" role="dialog" data-item="">
+		<div class="modal fade" id="deleteModal" role="dialog" data-item="">
     		<div class="modal-dialog">
 		      	<div class="modal-content">
 			        <div class="modal-header">
