@@ -41,6 +41,9 @@ function setIdModalDel(id){
 
 function setIdModalEdit(id){
 	$("#dataModal").data('item', id);
+	$("#saveBtn").click(function(){
+		editJson(id);
+	});
 }
 
 function inputsModalEdit(id){
@@ -100,9 +103,16 @@ function actions(){
 	// });
 }
 
+function maskMoney(){
+	$("#valor").maskMoney({showSymbol:true, symbol:"R$", decimal:",", thousands:"."});
+}
+
 $(document).ready(function(){
-	actions();
 	createTable();
+	actions();
+	maskMoney()
+	
+	
 });
 
 // function tabela(){
