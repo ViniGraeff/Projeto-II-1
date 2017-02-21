@@ -3,8 +3,7 @@ function tabela(){
 	$.get("http://192.168.1.171:3000/product", function(data) {
 		for(var i=0; i<data.length; i++){
 			var valor = data[i].valor
-			valor = valor.toFixed(2);
-			valor = valor.toString().replace(".", ",");
+			valor = valor.toFixed(2).toString().replace(".", ",");
 			
 			if (data[i].status=="A" && $('#listaStatus').val()=="A"){
 				$("#linhas-tab").append("<tr data-id="+data[i].id+" >"+
@@ -134,8 +133,7 @@ function getId(){
 		var id = $(this).parents('tr').data('id');
 		$.get("http://192.168.1.171:3000/product/"+id, function(data) {
 			var valor = data.valor;
-			valor = valor.toFixed(2);
-			valor = valor.toString().replace(".", ",");
+			valor = valor.toFixed(2).toString().replace(".", ",");
 
 			$("#nome").val(data.nome);
 			$("#valor").val(valor);
