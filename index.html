@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Lista de Compras</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="css/bootstrap.css">
+	<script src="js/jquery-3.1.1.min.js"></script>
+	<script src="js/bootstrap.js"></script>
+	<script src="js/script.js"></script>
+
+</head>
+<body class="color-body">
+	<nav class="navbar navbar-inverse">
+	  <div class="container">
+	    <!-- Brand and toggle get grouped for better mobile display -->
+	    <div class="navbar-header">
+	      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+	        <span class="sr-only">Toggle navigation</span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	      </button>
+	    	<a href="index.html"><span class="glyphicon glyphicon-shopping-cart navbar-brand"></span></a>
+	    </div>
+
+	    <!-- Collect the nav links, forms, and other content for toggling -->
+	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+	      <ul class="nav navbar-nav">
+	        <form class="navbar-form navbar-left">
+	        <!-- <div class="form-group">
+				<input id="campoBusca" type="text" class="form-control" placeholder="Busca de Itens">
+			</div>
+			<a class="btn btn-default" id="buscaBtn"><span class="glyphicon glyphicon-search"></span></a> -->
+	        <select id="listaStatus" name="listaStatus" class="form-control">
+				<option value="AI" selected="selected">Status</option>
+		    	<option value="A">Ativo</option>
+		    	<option value="I">Inativo</option>
+		    </select>
+	      </form>
+	      </ul>
+	    </div><!-- /.navbar-collapse -->
+	  </div><!-- /.container-fluid -->
+	</nav>
+
+	<div class="container section">
+		<h1><strong>Lista de Compras</strong></h1>
+		<table class="table table-hover table-bordered padding-table">
+		    <thead>
+		      <tr>
+		        <th class="thead">Id</th>
+		        <th class="thead">Nome</th>
+		        <th class="thead">Valor</th>
+		        <th class="thead">Status</th>
+		        <th class="thead">Estoque</th>
+		        <th class="thead">Editar</th>
+		        <th class="thead">Deletar</th>
+		      </tr>
+		    </thead>
+		    <tbody id="linhas-tab">	 
+		    </tbody>
+		</table>
+		<div class="add"><button data-toggle='modal' data-target='#dados' id="add"><span class="glyphicon glyphicon-plus"></span></button></div>
+	</div>
+
+
+	<!-- Modal Editar -->
+	<div class="modal fade" id="dados" role="dialog" data-item="">
+    	<div class="modal-dialog">
+	      	<div class="modal-content">
+		        <div class="modal-header">
+		         	<button type="button" class="close" data-dismiss="modal">&times;</button>
+		         	<h4 class="modal-title">Dados do Produto</h4>
+		        </div>
+		        <div class="modal-body">
+		         	<form>
+					    <div class="form-group">
+					     	<label for="nome">Nome do Produto:</label>
+					     	<input required="required" type="text" class="form-control" id="nome" placeholder="">
+					    </div>
+					    <div class="form-group">
+					     	<label for="valor">Valor:</label>
+					     	<div class="input-group">
+						     	<span class="input-group-addon">R$</span>
+						     	<input required="required" type="float" class="form-control" id="valor">
+						    </div>
+					    </div>
+						<div class="form-group">
+						  <label class="control-label" for="status">Status</label>
+						    <select required="required" id="status" name="status" class="form-control">
+						      <option value="A">Ativo</option>
+						      <option value="I">Inativo</option>
+						    </select>
+						</div>
+					    <div class="form-group">
+					     	<label for="estoque">Estoque:</label>
+					     	<input required="required" type="number" class="form-control" id="estoque" placeholder="">
+					    </div>
+					    <button type="submit" id="salvar" class="btn btn-default">Salvar</button>
+					    <input type="reset" value="Limpar Dados" class="btn btn-default">
+				  	</form>
+		        </div>
+	    	</div>
+	   	</div>
+	</div>
+
+	<!-- Modal Excluir -->
+	<div class="modal fade" id="delete" role="dialog" data-item="">
+    	<div class="modal-dialog">
+	      	<div class="modal-content">
+		        <div class="modal-header">
+		         	<button type="button" class="close" data-dismiss="modal">&times;</button>
+		        </div>
+		        <div class="modal-body">
+		         	<p>Realmente deseja remover este produto da lista de compras?</p>
+		        </div>
+		        <div class="modal-footer">
+		         	<button type="button" class="btn btn-default" data-dismiss="modal" id="deletebtn" data-id="">Deletar</button>
+		         	<button type="button" class="btn btn-default" data-dismiss="modal" id="cancelar">Cancelar</button>
+		        </div>
+	    	</div>
+	   	</div>
+	</div>
+
+
+
+	
+
+	
+</body>
+
+</html>
