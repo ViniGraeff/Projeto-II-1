@@ -52,6 +52,12 @@
   padding-top: 10px;
 }
 
+.alert{
+  width: 90%;
+  margin: 0 auto;
+  text-align: center;
+}
+
 html {
   font-family: sans-serif;
   -webkit-text-size-adjust: 100%;

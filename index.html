@@ -38,6 +38,7 @@
 
 		<div class="container section">
 			<h1><strong>Lista de Compras</strong></h1>
+			<div id="msgAlert"></div>
 			<table class="table table-hover table-bordered padding-table">
 			    <thead>
 					<tr>
@@ -87,7 +88,7 @@
 					     		<label for="estoque">Estoque:</label>
 					     		<input required="required" type="number" class="form-control" id="estoque" placeholder="">
 					    	</div>
-					    	<input id="saveBtn" class="btn btn-default col-md-2" value="Salvar" data-dismiss="modal">
+					    	<input type="button" id="saveBtn" class="btn btn-default" value="" data-dismiss="modal" data-item="">
 					    	<input type="reset" class="btn btn-default" value="Limpar Dados">
 				  		</form>
 		        	</div>
@@ -106,8 +107,8 @@
 		         		<p>Realmente deseja remover este produto da lista de compras?</p>
 		        	</div>
 		        	<div class="modal-footer">
-		         		<button type="button" class="btn btn-default" data-dismiss="modal" id="deletebtn" data-id="">Deletar</button>
-		         		<button type="button" class="btn btn-default" data-dismiss="modal" id="cancelar">Cancelar</button>
+		         		<input type="button" class="btn btn-default" data-dismiss="modal" id="deleteBtn" data-id="" value="Deletar">
+		         		<input type="button" class="btn btn-default" data-dismiss="modal" id="cancelBtn" value="Cancelar">
 		        	</div>
 	    		</div>
 	   		</div>
