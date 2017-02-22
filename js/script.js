@@ -148,7 +148,11 @@ function actions(){//ações dos botões
 
 //mascara para o campo valor do modal
 function maskMoney(){
-	$("#valor").maskMoney({showSymbol:true, symbol:"R$", decimal:",", thousands:"."});
+	$('#valor').priceFormat({
+		prefix: '',
+    centsSeparator: ',',
+    thousandsSeparator: '.'
+});
 }
 
 $(document).ready(function(){
