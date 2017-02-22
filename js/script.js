@@ -4,44 +4,31 @@ function clearTable(){//limpa a tabela
 	$("#rowsTable").html("");
 }
 
-function createTable(status, nomeStatus){//cria a tabela através do get, tras o parametro do status selecionado
+function createTable(){//cria a tabela através do get, tras o parametro do status selecionado
 	clearTable();//limpa a tabela para atualizar
 	$.get(server, function(data) {//seleciona os dados no json
 		for(var i=0; i<data.length; i++){//percorre todos os dados
-			var valor = checkNumber(data[i].valor);//checa se o numero não é uma variável
-			if (data[i].status==status){//se o status do item é igual ao status selecionado
-				$("#rowsTable").append("<tr data-id="+data[i].id+" >"+//cria a linha da tabela com os dados
-				"<td>"+data[i].id+"</td>"+
-				"<td>"+data[i].nome+"</td>"+
-				"<td>R$ "+valor+"</td>"+
-				"<td>"+nomeStatus+"</td>"+//printa o parametro mandado pelo checkStatus
-				"<td>"+data[i].estoque+"</td>"+
-				"<td class='table-option'><button data-toggle='modal' data-target='#dataModal' class='editBtn'><span class='glyphicon glyphicon-pencil'></span></button></td>"+
-				"<td class='table-option'><button data-toggle='modal' data-target='#deleteModal' class='delBtn'><span class='glyphicon glyphicon-trash'></span></button></td></tr>");
-			}
+			var valor = valueToString(data[i].valor);//checa se o numero não é uma variável
+			$("#rowsTable").append("<tr data-id="+data[i].id+" >"+//cria a linha da tabela com os dados
+			"<td>"+data[i].id+"</td>"+
+			"<td>"+data[i].nome+"</td>"+
+			"<td>R$ "+valor+"</td>"+
+			"<td>"+data[i].status+"</td>"+//printa o parametro mandado pelo checkStatus
+			"<td>"+data[i].estoque+"</td>"+
+			"<td class='table-option'><button data-toggle='modal' data-target='#dataModal' class='editBtn'><span class='glyphicon glyphicon-pencil'></span></button></td>"+
+			"<td class='table-option'><button data-toggle='modal' data-target='#deleteModal' class='delBtn'><span class='glyphicon glyphicon-trash'></span></button></td></tr>");
 		}
 	});
 }
 
-function checkStatus(status){
-	if(status=="A"){//se o status selecionado é A, manda o parametro de Ativo para a tabela
-		createTable(status, "Ativo");
-	}
-	else if (status=="I"){//se o status selecionado é I, manda o parametro de Inativo para a tabela
-		createTable(status, "Inativo");
-	}
-}
-
-function checkNumber(valor){//checa se o numero não é uma string antes de ir para a tabela (caso ocorra algum erro)
-	if (isNaN(valor)==true){
-		valor = "0,00"//se for string, define como valor zerado
-		return valor;
-	}
-	else if(isNaN(valor)==false){
-		valor = valueToString(valor);//se for numero, transforma em string
-		return valor;
-	}
-}
+// function checkStatus(status){
+// 	if(status=="A"){//se o status selecionado é A, manda o parametro de Ativo para a tabela
+// 		createTable(status, "Ativo");
+// 	}
+// 	else if (status=="I"){//se o status selecionado é I, manda o parametro de Inativo para a tabela
+// 		createTable(status, "Inativo");
+// 	}
+// }
 
 function valueToString(valor){//transforma o valor de numero para string para colocar na tabela e no modal
 	valor = valor.toFixed(2).toString().replace(".", ",");
@@ -52,14 +39,6 @@ function valueToNumber(){//transforma o valor de string para numero, para adicio
 	var valor = $("#valor").val();
 	valor = Number(valor.replace(",", ".")).toFixed(2);
 	return valor;
-}
-
-
-
-function confirmEdit(id){//confirma a operação de editar com o botão salvar no modal
-	$("#saveBtn").click(function(){
-		editJson(id);
-	});
 }
 
 function inputsModalAdd(){//limpa as inputs do modal antes de começar a adicionar
@@ -76,7 +55,7 @@ function setIdModalEdit(id){
 function inputsModalEdit(id){//preenche os inputs do modal editar
 	$.get(server+id, function(data) {//chama os produtos para preencher as inputs com o produto certo
 		$("#nome").val(data.nome);
-		$("#valor").val(checkNumber(data.valor));
+		$("#valor").val(valueToString(data.valor));
 		$("#status").val(data.status);
 		$("#estoque").val(data.estoque);
 	});
@@ -156,8 +135,8 @@ function actions(){//ações dos botões
 		modalTitles("Editando Produto", "Salvar Alterações");//clica para editar o produto, muda o título do modal
 	});
 	$('#selectStatus').change(function(){//quando muda a opção do select
-		var statusSelected = $("#selectStatus").val();//pega o valor do status selecionado
-		checkStatus(statusSelected);//checa qual status está selecionado
+		// var statusSelected = $("#selectStatus").val();//pega o valor do status selecionado
+		// checkStatus(statusSelected);//checa qual status está selecionado
 	});
 	$("#deleteBtn").click(function(){//clique no botão delete do modal e pega o id do produto
 		deleteJson($("#deleteModal").data('item'));//confirma a operação de deletar
@@ -165,7 +144,6 @@ function actions(){//ações dos botões
 	$("#saveBtn").click(function(){//clica para salvar
 		checkSave($("#saveBtn").data('item'));//check se é para adicionar ou editar
 	});
-
 }
 
 //mascara para o campo valor do modal
@@ -179,3 +157,4 @@ $(document).ready(function(){
 	getId();//seleciona o id na tabela através dos botões de editar e deletar
 	maskMoney();//mascara para o valor
 });
+
