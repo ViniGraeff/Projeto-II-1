@@ -37,7 +37,7 @@ function valueToString(valor){//transforma o valor de numero para string para co
 
 function valueToNumber(){//transforma o valor de string para numero, para adicionar no json
 	var valor = $("#valor").val();
-	valor = Number(valor.replace(",", ".")).toFixed(2);
+	valor = Number(valor.replace(",", "."));
 	return valor;
 }
 
