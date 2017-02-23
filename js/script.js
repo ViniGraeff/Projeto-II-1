@@ -78,6 +78,7 @@ function inputsModalAdd(){//limpa as inputs do modal antes de começar a adicion
 	$("#nome, #valor, #estoque").val("");
 	$("#status").val("A");
 	$("#saveBtn").data('item', "");//define o botão de salvar com o id nulo
+	$("#nome, #valor, #status, #estoque").css({"border": "1px solid #ccc"});
 }
 
 function setIdModalEdit(id){
@@ -92,6 +93,7 @@ function inputsModalEdit(id){//preenche os inputs do modal editar
 		$("#status").val(data.status);
 		$("#estoque").val(data.estoque);
 	});
+	$("#nome, #valor, #status, #estoque").css({"border": "1px solid #ccc"});
 }
 
 function setIdModalDel(id){
@@ -99,7 +101,7 @@ function setIdModalDel(id){
 }
 
 function deleteJson(id){//manda os dados para realizar a operação de deletar
-	ajax("DELETE", id, "", "", "", "", "Item excluído com sucesso!");
+	ajax("DELETE", id, "", "", "", "", "Item "+id+" excluído com sucesso!");
 }
 
 function addJson(){//manda os dados para realizar a operação de adicionar
@@ -107,7 +109,7 @@ function addJson(){//manda os dados para realizar a operação de adicionar
 }
 
 function editJson(id){//manda os dados para realizar a operação de editar
-	ajax("PUT", id, $("#nome").val(), valueToNumber(), $("#status").val(), $("#estoque").val(), $("#nome").val()+" editado com sucesso!");
+	ajax("PUT", id, $("#nome").val(), valueToNumber(), $("#status").val(), $("#estoque").val(), "Item "+id+" editado com sucesso!");
 }
 
 function ajax(type, id, nome, valor, status, estoque, msg){//realiza a operação desejada, com os dados recebidos
@@ -130,11 +132,10 @@ function ajax(type, id, nome, valor, status, estoque, msg){//realiza a operaçã
 function alertMsg(mensagem){//cria um alert depois das operações
 	$("#bodyMsgAlert").html("<p>"+mensagem+"</p>");
 	$('#msgAlert').modal('show');
-	$('#msgAlert').fadeOut('slow');
-	setTimeout(function(){
-    	$('#msgAlert').modal("hide");
-  	}, 2500);
-
+	// $('#msgAlert').fadeOut('slow');
+	// setTimeout(function(){
+ //    	$('#msgAlert').modal("hide");
+ //  	}, 2500);
 }
 
 //seleciona o id na tabela através dos botões de editar e deletar
@@ -163,6 +164,34 @@ function checkSave(saveId){
 	}
 }
 
+function validateForm(saveId){
+	if ($("#nome").val()==""){
+		$("#nome").css({"border":"1px solid red"});
+	}
+	if ($("#valor").val()==""){
+		$("#valor").css({"border":"1px solid red"});
+	}
+	if ($("#status").val()==""){
+		$("#status").css({"border":"1px solid red"});
+	}
+	if ($("#estoque").val()==""){
+		$("#estoque").css({"border":"1px solid red"});
+	}
+	else{
+		$("#dataModal").fadeOut();
+		setTimeout(function(){
+    		$('#dataModal').modal("hide");
+  		});
+  		checkSave(saveId);
+	}
+	$("#nome, #valor, #status, #estoque").focus(function(){
+		$(this).css({"border": "1px solid #00ab9b"});
+	});
+	$("#nome, #valor, #status, #estoque").blur(function(){
+		$(this).css({"border": "1px solid #ccc"});
+	});
+}
+
 function actions(){//ações dos botões
 	$("#addBtn").click(function(){
 		modalTitles("Adicionando Produto", "Adicionar Produto");//clica para adicionar o produto, muda o título do modal
@@ -178,7 +207,7 @@ function actions(){//ações dos botões
 		deleteJson($("#deleteModal").data('item'));//confirma a operação de deletar
 	});
 	$("#saveBtn").click(function(){//clica para salvar
-		checkSave($("#saveBtn").data('item'));//check se é para adicionar ou editar
+		validateForm($("#saveBtn").data('item'));//check se é para adicionar ou editar
 	});
 }
 
@@ -196,5 +225,4 @@ $(document).ready(function(){
 	actions();//ações de botões 
 	getId();//seleciona o id na tabela através dos botões de editar e deletar
 	maskMoney();//mascara para o valor
-	// checkStatus($("#selectStatus").val());
 });
