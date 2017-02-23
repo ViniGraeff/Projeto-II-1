@@ -1,37 +1,64 @@
-var server = "http://localhost:3000/product/";//servidos com os dados
+var server = "http://192.168.1.168:3000/product/";//servidos com os dados
 
 function clearTable(){//limpa a tabela
 	$("#rowsTable").html("");
 }
 
-function createTable(){//cria a tabela através do get, tras o parametro do status selecionado
+function createTable(){//cria a tabela através do get
+	var statusSelected = checkStatusSelect($("#selectStatus").val());
 	clearTable();//limpa a tabela para atualizar
 	$.get(server, function(data) {//seleciona os dados no json
 		for(var i=0; i<data.length; i++){//percorre todos os dados
-			var valor = valueToString(data[i].valor);//checa se o numero não é uma variável
-			$("#rowsTable").append("<tr data-id="+data[i].id+" >"+//cria a linha da tabela com os dados
-			"<td>"+data[i].id+"</td>"+
-			"<td>"+data[i].nome+"</td>"+
-			"<td>R$ "+valor+"</td>"+
-			"<td>"+data[i].status+"</td>"+//printa o parametro mandado pelo checkStatus
-			"<td>"+data[i].estoque+"</td>"+
-			"<td class='table-option'><button data-toggle='modal' data-target='#dataModal' class='editBtn'><span class='glyphicon glyphicon-pencil'></span></button></td>"+
-			"<td class='table-option'><button data-toggle='modal' data-target='#deleteModal' class='delBtn'><span class='glyphicon glyphicon-trash'></span></button></td></tr>");
+			var valor = valueToString(data[i].valor);
+			var status = verifyStatus(data[i].status);
+			if(statusSelected==data[i].status){
+				$("#rowsTable").append("<tr data-id="+data[i].id+" >"+//cria a linha da tabela com os dados
+				"<td>"+data[i].id+"</td>"+
+				"<td>"+data[i].nome+"</td>"+
+				"<td>R$ "+valor+"</td>"+
+				"<td>"+status+"</td>"+//printa o parametro mandado pelo checkStatus
+				"<td>"+data[i].estoque+"</td>"+
+				"<td class='table-option'><button data-toggle='modal' data-target='#dataModal' class='editBtn'><span class='glyphicon glyphicon-pencil'></span></button></td>"+
+				"<td class='table-option'><button data-toggle='modal' data-target='#deleteModal' class='delBtn'><span class='glyphicon glyphicon-trash'></span></button></td></tr>");
+			}
+			else if(statusSelected==""){
+				$("#rowsTable").append("<tr data-id="+data[i].id+" >"+//cria a linha da tabela com os dados
+				"<td>"+data[i].id+"</td>"+
+				"<td>"+data[i].nome+"</td>"+
+				"<td>R$ "+valor+"</td>"+
+				"<td>"+status+"</td>"+//printa o parametro mandado pelo checkStatus
+				"<td>"+data[i].estoque+"</td>"+
+				"<td class='table-option'><button data-toggle='modal' data-target='#dataModal' class='editBtn'><span class='glyphicon glyphicon-pencil'></span></button></td>"+
+				"<td class='table-option'><button data-toggle='modal' data-target='#deleteModal' class='delBtn'><span class='glyphicon glyphicon-trash'></span></button></td></tr>");
+
+			}
 		}
 	});
 }
 
-// function checkStatus(status){
-// 	if(status=="A"){//se o status selecionado é A, manda o parametro de Ativo para a tabela
-// 		createTable(status, "Ativo");
-// 	}
-// 	else if (status=="I"){//se o status selecionado é I, manda o parametro de Inativo para a tabela
-// 		createTable(status, "Inativo");
-// 	}
-// }
+function verifyStatus(statusJson){
+	if (statusJson=="A"){
+		var status="Ativo";
+		return status;
+	}
+	else if (statusJson=="I"){
+		var status="Inativo";
+		return status;
+	}
+}
+
+function checkStatusSelect(statusSelected){
+	if (statusSelected=="A" || statusSelected=="I"){
+		return statusSelected;
+	}
+	else if (statusSelected=="AI"){
+		return "";
+	}
+}
+
 
 function valueToString(valor){//transforma o valor de numero para string para colocar na tabela e no modal
-	valor = valor.toFixed(2).toString().replace(".", ",");
+	valor = parseFloat(valor.toString()).toFixed(2).replace(".", ",");
 	return valor;
 }
 
@@ -70,7 +97,7 @@ function deleteJson(id){//manda os dados para realizar a operação de deletar
 }
 
 function addJson(){//manda os dados para realizar a operação de adicionar
-	ajax("POST", "", $("#nome").val(), valueToNumber(), $("#status").val(), $("#estoque").val(), "Item adicionado com sucesso!");
+	ajax("POST", "", $("#nome").val(), valueToNumber(), $("#status").val(), $("#estoque").val(), $("#nome").val()+" adicionado com sucesso!");
 }
 
 function editJson(id){//manda os dados para realizar a operação de editar
@@ -135,8 +162,7 @@ function actions(){//ações dos botões
 		modalTitles("Editando Produto", "Salvar Alterações");//clica para editar o produto, muda o título do modal
 	});
 	$('#selectStatus').change(function(){//quando muda a opção do select
-		// var statusSelected = $("#selectStatus").val();//pega o valor do status selecionado
-		// checkStatus(statusSelected);//checa qual status está selecionado
+		createTable();//checa qual status está selecionado
 	});
 	$("#deleteBtn").click(function(){//clique no botão delete do modal e pega o id do produto
 		deleteJson($("#deleteModal").data('item'));//confirma a operação de deletar
@@ -149,9 +175,9 @@ function actions(){//ações dos botões
 //mascara para o campo valor do modal
 function maskMoney(){
 	$('#valor').priceFormat({
-		prefix: '',
+	prefix: '',
     centsSeparator: ',',
-    thousandsSeparator: '.'
+    thousandsSeparator: ''
 });
 }
 
@@ -160,5 +186,5 @@ $(document).ready(function(){
 	actions();//ações de botões 
 	getId();//seleciona o id na tabela através dos botões de editar e deletar
 	maskMoney();//mascara para o valor
+	// checkStatus($("#selectStatus").val());
 });
-
