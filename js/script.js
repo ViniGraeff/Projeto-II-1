@@ -168,13 +168,13 @@ function validateForm(saveId){
 	if ($("#nome").val()==""){
 		$("#nome").css({"border":"1px solid red"});
 	}
-	if ($("#valor").val()==""){
+	else if ($("#valor").val()==""){
 		$("#valor").css({"border":"1px solid red"});
 	}
-	if ($("#status").val()==""){
+	else if ($("#status").val()==""){
 		$("#status").css({"border":"1px solid red"});
 	}
-	if ($("#estoque").val()==""){
+	else if ($("#estoque").val()==""){
 		$("#estoque").css({"border":"1px solid red"});
 	}
 	else{
@@ -214,10 +214,10 @@ function actions(){//ações dos botões
 //mascara para o campo valor do modal
 function maskMoney(){
 	$('#valor').priceFormat({
-	prefix: '',
-    centsSeparator: ',',
-    thousandsSeparator: ''
-});
+		prefix: '',
+	    centsSeparator: ',',
+	    thousandsSeparator: ''
+	});
 }
 
 $(document).ready(function(){
