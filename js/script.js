@@ -48,10 +48,16 @@ function verifyStatus(statusJson){
 }
 
 function checkStatusSelect(statusSelected){
-	if (statusSelected=="A" || statusSelected=="I"){
+	if (statusSelected=="A"){
+		$("#subtitle").html("Itens Ativos");
+		return statusSelected;
+	}
+	else if(statusSelected=="I"){
+		$("#subtitle").html("Itens Inativos");
 		return statusSelected;
 	}
 	else if (statusSelected=="AI"){
+		$("#subtitle").html("Itens Ativos e Inativos");
 		return "";
 	}
 }
@@ -101,7 +107,7 @@ function addJson(){//manda os dados para realizar a operação de adicionar
 }
 
 function editJson(id){//manda os dados para realizar a operação de editar
-	ajax("PUT", id, $("#nome").val(), valueToNumber(), $("#status").val(), $("#estoque").val(), "Item editado com sucesso!");
+	ajax("PUT", id, $("#nome").val(), valueToNumber(), $("#status").val(), $("#estoque").val(), $("#nome").val()+" editado com sucesso!");
 }
 
 function ajax(type, id, nome, valor, status, estoque, msg){//realiza a operação desejada, com os dados recebidos
@@ -122,9 +128,13 @@ function ajax(type, id, nome, valor, status, estoque, msg){//realiza a operaçã
 }
 
 function alertMsg(mensagem){//cria um alert depois das operações
-	$("#msgAlert").html("<div class='alert alert-success alert-dismissible' id='alert'><a class='close'data-dismiss='alert' aria-label='close'>&times;</a>"+
-		"<p>"+mensagem+"</p></div>");
-	$('#alert').fadeOut(5000);
+	$("#bodyMsgAlert").html("<p>"+mensagem+"</p>");
+	$('#msgAlert').modal('show');
+	$('#msgAlert').fadeOut('slow');
+	setTimeout(function(){
+    	$('#msgAlert').modal("hide");
+  	}, 2500);
+
 }
 
 //seleciona o id na tabela através dos botões de editar e deletar

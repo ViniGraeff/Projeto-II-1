@@ -6,6 +6,7 @@
 		<title>Lista de Compras</title>
 		<!-- Latest compiled and minified CSS -->
 		<link rel="stylesheet" href="css/bootstrap.css">
+		<link rel="stylesheet" href="css/style.css">
 		<script src="js/jquery-3.1.1.min.js"></script>
 		<script src="js/jquery.priceformat.min.js"></script>
 		<script src="js/bootstrap.js"></script>
@@ -35,10 +36,10 @@
 		   		 </div>
 		  	</div>
 		</nav>
-
 		<div class="container section">
 			<h1><strong>Lista de Compras</strong></h1>
-			<div id="msgAlert"></div>
+			<h3 id="subtitle"></h3>
+			<div class="add"><button data-toggle='modal' data-target='#dataModal' id="addBtn" class="btn btn-default">Adicionar Item <span class="glyphicon glyphicon-plus"></span></button></div>
 			<table class="table table-hover table-bordered padding-table">
 			    <thead>
 					<tr>
@@ -53,7 +54,6 @@
 				</thead>
 				<tbody id="rowsTable"></tbody>
 			</table>
-			<div class="add"><button data-toggle='modal' data-target='#dataModal' id="addBtn"><span class="glyphicon glyphicon-plus"></span></button></div>
 		</div>
 
 		<!-- Modal Editar e Adicionar -->
@@ -109,6 +109,15 @@
 		        	<div class="modal-footer">
 		         		<input type="button" class="btn btn-default" data-dismiss="modal" id="deleteBtn" data-id="" value="Deletar">
 		         		<input type="button" class="btn btn-default" data-dismiss="modal" id="cancelBtn" value="Cancelar">
+		        	</div>
+	    		</div>
+	   		</div>
+		</div>
+
+		<div class="modal fade" id="msgAlert" role="dialog">
+    		<div class="modal-dialog">
+		      	<div class="modal-content alert">
+		        	<div class="modal-body" id="bodyMsgAlert">
 		        	</div>
 	    		</div>
 	   		</div>
