@@ -326,9 +326,14 @@ function busca(){
 	    		 		status = "Inativo";
 	    		 	}
 	    		 	$(".listaBusca").fadeIn("fast").css({"display":"block"});
+	    		 		// $("#rowBusca").html('<div class="col-md-10 col-md-offset-1 well" data-id='+ this.id+'>'+
+	    		 		// '<div class="col-md-4"><h5>Nome: ' + nome + '</h5>'+
+	    		 		// '<p>Preço: ' + this.valor + '</p>'+
+	    		 		// '</div><div class="col-md-4">'+
+	    		 		// );
 	    		 	output += '<div class="col-md-10 col-md-offset-1 well" data-id='+ this.id+'>';
 		   			output += '<div class="col-md-4">';
-		   			output += '<h4>Nome: ' + nome + '</h4>';
+		   			output += '<h5>Nome: ' + nome + '</h5>';
 		   			output += '<p>Preço: ' + this.valor + '</p>'
 		   			output += '</div>';
 		   			output += '<div class="col-md-4">';
@@ -340,10 +345,6 @@ function busca(){
 		   			output += "<button data-toggle='modal' data-target='#deleteModal' class='delSearchBtn'><span class='glyphicon glyphicon-trash'></span></button>";
 		   			output += '</div>';
 		   			output += '</div>';
-			  //  		if(count%2 == ""){
-			 	// 		output += '</div><div class="row">'
-					// }
-			  //  		count++;
 		 		}
 			});
 			output += '</div>';

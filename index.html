@@ -20,10 +20,15 @@
 			    </div>
 		    	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		    		<ul class="nav navbar-nav">
-		       			<form class="navbar-form navbar-left">
-					        <div class="form-group">
-								<input id="campoBusca" type="input" class="form-control" placeholder="Busca de Itens">
+		    			<form class="navbar-form navbar-left">
+		      				<div class="form-group">
+								<input id="campoBusca" type="input" class="form-control" placeholder="Busca de Itens" autocomplete="off">
 							</div>
+		      			</form>
+		       			
+		      		</ul>
+		      		<ul>
+		      			<form class="navbar-form navbar-right">
 							<!-- <a class="btn btn-default" id="buscaBtn"><span class="glyphicon glyphicon-search"></span></a> -->
 					        <select id="selectStatus" name="listaStatus" class="form-control">
 								<option value="AI" selected="selected">Ativos e Inativos</option>
@@ -36,7 +41,7 @@
 		  	</div>
 		</nav>
 		<div class="container section">
-		<div id="listaBusca" class="listaBusca"></div>
+			<div id="listaBusca" class="listaBusca"></div>
 			<h1><strong>Lista de Compras</strong></h1>
 			<h3 id="subtitle"></h3>
 			<div class="add"><button data-toggle='modal' data-target='#dataModal' id="addBtn" class="btn btn-default">Adicionar Item <span class="glyphicon glyphicon-plus"></span></button></div>
@@ -68,13 +73,13 @@
 		         		<form id="formModal">
 					    	<div class="form-group">
 					     		<label for="nome">Nome do Produto:</label>
-					     		<input required="required" type="text" class="form-control" id="nome" placeholder="">
+					     		<input required="required" type="text" class="form-control" id="nome" placeholder="" autocomplete="off">
 					    	</div>
 					    	<div class="form-group">
 					     		<label for="valor">Valor:</label>
 					     		<div class="input-group">
 						     		<span class="input-group-addon">R$</span>
-						     		<input required="required" type="float" class="form-control" id="valor">
+						     		<input required="required" type="float" class="form-control" id="valor" autocomplete="off">
 						    	</div>
 					    	</div>
 							<div class="form-group">
