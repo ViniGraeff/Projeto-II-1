@@ -1,4 +1,5 @@
-var server = "http://localhost:3000/product/";//servidos com os dados
+var server = "http://192.168.1.168:3000/product/";//servidos com os dados
+var checkName = 0;
 
 function cleanTable(){//limpa a tabela
 	$("#rowsTable").html("");
@@ -169,8 +170,14 @@ function checkSave(saveId){
 }
 
 function alertInputs(input){
-	$(input).css({"border":"1px solid red"});
-	$("#alertInputs").html("Todos os campos devem ser preenchidos!");
+	if(input!=""){
+		$(input).css({"border":"1px solid red"});
+		$("#alertInputs").html("Todos os campos devem ser preenchidos!");
+	}
+	else{
+		$("#nome").css({"border":"1px solid red"});
+		$("#alertInputs").html("Item já cadastrado!");
+	}
 }
 
 function cleanAlertInput(){
@@ -180,38 +187,32 @@ function cleanAlertInput(){
 
 
 
-// function nomeSearch(name){
-// 	$.get(server, function(data) {//seleciona os dados no json
-// 		for(var i=0; i<data.length; i++){
-			
-// 		}
-		
-// 	});
-// }
+function nomeSearch(saveId){
+	$.get(server, function(data) {
+		for(var i=0; i<data.length; i++){
+			if($("#nome").val()==data[i].nome && saveId!=data[i].id){
+				alertInputs("");
+				checkName = 1;
+			}
+		}
+		if(checkName==0){
+			closeModal(saveId);
+		}
+	});
+}
 
-// function bla(tagName){
-// 		var i = null;
-// 		$.get(server, function(data){
-// 			for (i = 0; data.length > i; i += 1) {
-// 				if (data[i].nome === tagName) {
-// 					return true;
-// 				}
-// 			}
-			
-// 			return false;
-// 		});
-// 	};
+function closeModal(saveId){
+		$("#dataModal").fadeOut();
+		setTimeout(function(){
+    		$('#dataModal').modal("hide");
+  		});
+  		checkSave(saveId);
+}
 
 
 function validateForm(saveId){
-	// var tagName = $("#nome").val();
-	// var hasTag = bla(tagName);
-
-	// if(hasTag==false){
-	// 	alert("bla");
-	// }
-
-	if ($("#nome").val()==""){
+	checkName = 0;
+	if($("#nome").val()==""){
 		alertInputs("#nome");
 	}
 	else if ($("#valor").val()==""){
@@ -223,13 +224,8 @@ function validateForm(saveId){
 	else if ($("#estoque").val()==""){
 		alertInputs("#estoque");
 	}
-
 	else{
-		$("#dataModal").fadeOut();
-		setTimeout(function(){
-    		$('#dataModal').modal("hide");
-  		});
-  		checkSave(saveId);
+		nomeSearch(saveId);
 	}
 	$("#nome, #valor, #status, #estoque").focus(function(){
 		$(this).css({"border": "1px solid #00ab9b"});
@@ -269,7 +265,7 @@ function actions(){//ações dos botões
 	    }
 	});
 	$("#nome").keyup(function(){
-		var regexp = /[^a-zA-Z- ãõáéíóúàèÌòùâêîôûäëïüöÃÕÁÉÍÓÚÀÈÌÒÙÄÜÏÖËÂÊÎÔÛ]/g;
+		var regexp = /[^a-zA-Z- çãõáéíóúàèÌòùâêîôûäëïüöÃÕÁÉÍÓÚÀÈÌÒÙÄÜÏÖËÂÊÎÔÛ]/g;
 		if($(this).val().match(regexp)){
 			$(this).val( $(this).val().replace(regexp,'') );
 		}
