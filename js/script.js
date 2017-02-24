@@ -5,9 +5,16 @@ function cleanTable(){//limpa a tabela
 	$("#rowsTable").html("");
 }
 
+function cleanBusca(){
+	$("#listaBusca").html("");
+	$("#campoBusca").val("");
+	$(".listaBusca").fadeOut("fast").css({"display":"none"});
+}
+
 function createTable(){//cria a tabela através do get
 	var statusSelected = checkStatusSelect($("#selectStatus").val());
 	cleanTable();//limpa a tabela para atualizar
+	cleanBusca();
 	$.get(server, function(data) {//seleciona os dados no json
 		for(var i=0; i<data.length; i++){//percorre todos os dados
 			var valor = valueToString(data[i].valor);
@@ -155,16 +162,12 @@ function getId(){
 	});
 	$("#listaBusca").on('click', '.delSearchBtn', function(){//no clique do botão deletar na tabela, pega o id da linha
 		var id = $(this).parents('.well').data('id');
-		setIdModalDel(id);//seta o id da linha no modal de deletar
-		$("#listaBusca").html("");
-		$("#campoBusca").val("");
+		setIdModalDel(id);//seta o id da linha no modal de deletar	
 	});
 	$("#listaBusca").on('click', '.editSearchBtn', function(){//no clique do botão editar na tabela, pega o id da linha
 		var id = $(this).parents('.well').data('id');
 		setIdModalEdit(id);//seta o id da linha no modal de edição
 		inputsModalEdit(id);//preenche os inputs no modal de edição
-		$("#listaBusca").html("");
-		$("#campoBusca").val("");
 	});
 }
 
@@ -302,7 +305,8 @@ function busca(){
 	$('#campoBusca').keyup(function(){
 		var searchField = $(this).val();
  		if(searchField === '')  {
- 			$('#listaBusca').html('');
+ 			// $('#listaBusca').html('');
+ 			$(".listaBusca").fadeOut("fast").css({"display":"none"});
  			return;
  		}
  
@@ -313,17 +317,25 @@ function busca(){
         $.get(server, function(data) {
 	        $(data).each(function () {
 	        	var nome = this.nome;
+	        	var status;
 	    		 if (nome.search(regex) != -1) {
-	    		 	output += '<div class="col-md-6 well" data-id='+ this.id+'>';
-		   			output += '<div class="col-md-5">';
-		   			output += '<h5>Nome: ' + nome + '</h5>';
+	    		 	if(this.status=="A"){
+	    		 		status = "Ativo";
+	    		 	}
+	    		 	else{
+	    		 		status = "Inativo";
+	    		 	}
+	    		 	$(".listaBusca").fadeIn("fast").css({"display":"block"});
+	    		 	output += '<div class="col-md-10 col-md-offset-1 well" data-id='+ this.id+'>';
+		   			output += '<div class="col-md-4">';
+		   			output += '<h4>Nome: ' + nome + '</h4>';
 		   			output += '<p>Preço: ' + this.valor + '</p>'
 		   			output += '</div>';
-		   			output += '<div class="col-md-5">';
-		   			output += '<h5>Status: ' + this.status + '</h5>';
+		   			output += '<div class="col-md-4">';
+		   			output += '<h5>Status: ' + status + '</h5>';
 		   			output += '<p>Estoque: ' + this.estoque + '</p>'
 		   			output += '</div>';
-		   			output += '<div class="col-md-2">';
+		   			output += '<div class="col-md-4">';
 		   			output += '<button data-toggle="modal" data-target="#dataModal" class="editSearchBtn"><span class="glyphicon glyphicon-pencil"></span></button>';
 		   			output += "<button data-toggle='modal' data-target='#deleteModal' class='delSearchBtn'><span class='glyphicon glyphicon-trash'></span></button>";
 		   			output += '</div>';

@@ -14,6 +14,19 @@
   margin: 0;
 }
 
+.listaBusca{
+  z-index: +3;
+  position: fixed;
+  top: 8%;
+  right: 0;
+  left: 0;
+ /* height: 20%;*/
+  overflow-y: auto;
+  background-color: #1a1a1a;
+  display: none;
+  box-shadow: 0px 10px 20px grey;
+}
+
 .well{
   background-color: white;
   border-color: #00ab9b;
@@ -21,6 +34,7 @@
 }
 
 .section{
+  padding-top: 6%;
    background-color: #f3f2f4;
    padding-bottom: 2%;
 }
