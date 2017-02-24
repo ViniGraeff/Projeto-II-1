@@ -1,12 +1,12 @@
-var server = "http://192.168.1.168:3000/product/";//servidos com os dados
+var server = "http://localhost:3000/product/";//servidos com os dados
 
-function clearTable(){//limpa a tabela
+function cleanTable(){//limpa a tabela
 	$("#rowsTable").html("");
 }
 
 function createTable(){//cria a tabela através do get
 	var statusSelected = checkStatusSelect($("#selectStatus").val());
-	clearTable();//limpa a tabela para atualizar
+	cleanTable();//limpa a tabela para atualizar
 	$.get(server, function(data) {//seleciona os dados no json
 		for(var i=0; i<data.length; i++){//percorre todos os dados
 			var valor = valueToString(data[i].valor);
@@ -30,7 +30,6 @@ function createTable(){//cria a tabela através do get
 				"<td>"+data[i].estoque+"</td>"+
 				"<td class='table-option'><button data-toggle='modal' data-target='#dataModal' class='editBtn'><span class='glyphicon glyphicon-pencil'></span></button></td>"+
 				"<td class='table-option'><button data-toggle='modal' data-target='#deleteModal' class='delBtn'><span class='glyphicon glyphicon-trash'></span></button></td></tr>");
-
 			}
 		}
 	});
@@ -78,7 +77,7 @@ function inputsModalAdd(){//limpa as inputs do modal antes de começar a adicion
 	$("#nome, #valor, #estoque").val("");
 	$("#status").val("A");
 	$("#saveBtn").data('item', "");//define o botão de salvar com o id nulo
-	$("#nome, #valor, #status, #estoque").css({"border": "1px solid #ccc"});
+	cleanAlertInput();
 }
 
 function setIdModalEdit(id){
@@ -87,13 +86,14 @@ function setIdModalEdit(id){
 }
 
 function inputsModalEdit(id){//preenche os inputs do modal editar
+	console.log(id);
 	$.get(server+id, function(data) {//chama os produtos para preencher as inputs com o produto certo
 		$("#nome").val(data.nome);
 		$("#valor").val(valueToString(data.valor));
 		$("#status").val(data.status);
 		$("#estoque").val(data.estoque);
 	});
-	$("#nome, #valor, #status, #estoque").css({"border": "1px solid #ccc"});
+	cleanAlertInput();
 }
 
 function setIdModalDel(id){
@@ -125,17 +125,21 @@ function ajax(type, id, nome, valor, status, estoque, msg){//realiza a operaçã
 		success: function(){
 			alertMsg(msg);//envia mensagem conforme função realizada
 			createTable();//chama a tabela atualizada
+		},
+		error: function(){
+			alertMsg("Erro na operação!");
 		}
+		
 	});
 }
 
 function alertMsg(mensagem){//cria um alert depois das operações
 	$("#bodyMsgAlert").html("<p>"+mensagem+"</p>");
 	$('#msgAlert').modal('show');
-	// $('#msgAlert').fadeOut('slow');
-	// setTimeout(function(){
- //    	$('#msgAlert').modal("hide");
- //  	}, 2500);
+	$('#msgAlert').fadeOut('slow');
+	setTimeout(function(){
+    	$('#msgAlert').modal("hide");
+  	}, 2500);
 }
 
 //seleciona o id na tabela através dos botões de editar e deletar
@@ -164,19 +168,30 @@ function checkSave(saveId){
 	}
 }
 
+function alertInputs(input){
+	$(input).css({"border":"1px solid red"});
+	$("#alertInputs").html("Todos os campos devem ser preenchidos!");
+}
+
+function cleanAlertInput(){
+	$("#nome, #valor, #status, #estoque").css({"border": "1px solid #ccc"});
+	$("#alertInputs").html("");
+}
+
 function validateForm(saveId){
 	if ($("#nome").val()==""){
-		$("#nome").css({"border":"1px solid red"});
+		alertInputs("#nome");
 	}
 	else if ($("#valor").val()==""){
-		$("#valor").css({"border":"1px solid red"});
+		alertInputs("#valor");
 	}
 	else if ($("#status").val()==""){
-		$("#status").css({"border":"1px solid red"});
+		alertInputs("#status");
 	}
 	else if ($("#estoque").val()==""){
-		$("#estoque").css({"border":"1px solid red"});
+		alertInputs("#estoque");
 	}
+
 	else{
 		$("#dataModal").fadeOut();
 		setTimeout(function(){
@@ -186,10 +201,12 @@ function validateForm(saveId){
 	}
 	$("#nome, #valor, #status, #estoque").focus(function(){
 		$(this).css({"border": "1px solid #00ab9b"});
+		$("#alertInputs").html("");
 	});
 	$("#nome, #valor, #status, #estoque").blur(function(){
-		$(this).css({"border": "1px solid #ccc"});
+		cleanAlertInput();
 	});
+	
 }
 
 function actions(){//ações dos botões
@@ -209,10 +226,20 @@ function actions(){//ações dos botões
 	$("#saveBtn").click(function(){//clica para salvar
 		validateForm($("#saveBtn").data('item'));//check se é para adicionar ou editar
 	});
+	$('#estoque').keyup(function () {
+	    if (this.value.match(/[0-9]/)) {
+	        this.value = this.value.replace(/[^0-9]/g, '');
+	    }
+	});
+	$('#estoque').blur(function () {
+	    if (!this.value.match(/[0-9]/)) {
+	        this.value = this.value.replace(/[^0-9]/g, '');
+	    }
+	});
 }
 
 //mascara para o campo valor do modal
-function maskMoney(){
+function maskValor(){
 	$('#valor').priceFormat({
 		prefix: '',
 	    centsSeparator: ',',
@@ -224,5 +251,5 @@ $(document).ready(function(){
 	createTable();//cria a tabela com o $.get
 	actions();//ações de botões 
 	getId();//seleciona o id na tabela através dos botões de editar e deletar
-	maskMoney();//mascara para o valor
+	maskValor();//mascara para o valor
 });
