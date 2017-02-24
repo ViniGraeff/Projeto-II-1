@@ -270,6 +270,9 @@ function actions(){//ações dos botões
 			$(this).val( $(this).val().replace(regexp,'') );
 		}
 	});
+	$('#nome, #valor, #estoque').bind("paste",function(e) {
+          e.preventDefault();
+     });
 }
 
 //mascara para o campo valor do modal
