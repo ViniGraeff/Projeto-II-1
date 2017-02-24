@@ -1,4 +1,4 @@
-var server = "http://192.168.1.168:3000/product/";//servidos com os dados
+var server = "http://192.168.1.172:3000/product/";//servidos com os dados
 var checkName = 0;
 
 function cleanTable(){//limpa a tabela
@@ -87,7 +87,6 @@ function setIdModalEdit(id){
 }
 
 function inputsModalEdit(id){//preenche os inputs do modal editar
-	console.log(id);
 	$.get(server+id, function(data) {//chama os produtos para preencher as inputs com o produto certo
 		$("#nome").val(data.nome);
 		$("#valor").val(valueToString(data.valor));
@@ -154,6 +153,19 @@ function getId(){
 		setIdModalEdit(id);//seta o id da linha no modal de edição
 		inputsModalEdit(id);//preenche os inputs no modal de edição
 	});
+	$("#listaBusca").on('click', '.delSearchBtn', function(){//no clique do botão deletar na tabela, pega o id da linha
+		var id = $(this).parents('.well').data('id');
+		setIdModalDel(id);//seta o id da linha no modal de deletar
+		$("#listaBusca").html("");
+		$("#campoBusca").val("");
+	});
+	$("#listaBusca").on('click', '.editSearchBtn', function(){//no clique do botão editar na tabela, pega o id da linha
+		var id = $(this).parents('.well').data('id');
+		setIdModalEdit(id);//seta o id da linha no modal de edição
+		inputsModalEdit(id);//preenche os inputs no modal de edição
+		$("#listaBusca").html("");
+		$("#campoBusca").val("");
+	});
 }
 
 function modalTitles(title, button){
@@ -190,7 +202,7 @@ function cleanAlertInput(){
 function nomeSearch(saveId){
 	$.get(server, function(data) {
 		for(var i=0; i<data.length; i++){
-			if($("#nome").val()==data[i].nome && saveId!=data[i].id){
+			if($("#nome").val().toLowerCase()==data[i].nome.toLowerCase() && saveId!=data[i].id){
 				alertInputs("");
 				checkName = 1;
 			}
@@ -245,6 +257,9 @@ function actions(){//ações dos botões
 	$("#rowsTable").on('click', '.editBtn', function(){
 		modalTitles("Editando Produto", "Salvar Alterações");//clica para editar o produto, muda o título do modal
 	});
+	$("#listaBusca").on('click', '.editSearchBtn', function(){
+		modalTitles("Editando Produto", "Salvar Alterações");//clica para editar o produto, muda o título do modal
+	});
 	$('#selectStatus').change(function(){//quando muda a opção do select
 		createTable();//checa qual status está selecionado
 	});
@@ -283,10 +298,53 @@ function maskValor(){
 	    thousandsSeparator: ''
 	});
 }
+function busca(){
+	$('#campoBusca').keyup(function(){
+		var searchField = $(this).val();
+ 		if(searchField === '')  {
+ 			$('#listaBusca').html('');
+ 			return;
+ 		}
+ 
+        var regex = new RegExp(searchField, "i");
+        var output = '<div class="row busca" id="rowBusca">';
+        var count = 1;
+
+        $.get(server, function(data) {
+	        $(data).each(function () {
+	        	var nome = this.nome;
+	    		 if (nome.search(regex) != -1) {
+	    		 	output += '<div class="col-md-6 well" data-id='+ this.id+'>';
+		   			output += '<div class="col-md-5">';
+		   			output += '<h5>Nome: ' + nome + '</h5>';
+		   			output += '<p>Preço: ' + this.valor + '</p>'
+		   			output += '</div>';
+		   			output += '<div class="col-md-5">';
+		   			output += '<h5>Status: ' + this.status + '</h5>';
+		   			output += '<p>Estoque: ' + this.estoque + '</p>'
+		   			output += '</div>';
+		   			output += '<div class="col-md-2">';
+		   			output += '<button data-toggle="modal" data-target="#dataModal" class="editSearchBtn"><span class="glyphicon glyphicon-pencil"></span></button>';
+		   			output += "<button data-toggle='modal' data-target='#deleteModal' class='delSearchBtn'><span class='glyphicon glyphicon-trash'></span></button>";
+		   			output += '</div>';
+		   			output += '</div>';
+			  //  		if(count%2 == ""){
+			 	// 		output += '</div><div class="row">'
+					// }
+			  //  		count++;
+		 		}
+			});
+			output += '</div>';
+   			$('#listaBusca').html(output);
+		});
+	});
+}
 
 $(document).ready(function(){
 	createTable();//cria a tabela com o $.get
+	busca();
 	actions();//ações de botões 
 	getId();//seleciona o id na tabela através dos botões de editar e deletar
 	maskValor();//mascara para o valor
+	
 });

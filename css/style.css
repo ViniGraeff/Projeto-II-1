@@ -14,9 +14,20 @@
   margin: 0;
 }
 
+.well{
+  background-color: white;
+  border-color: #00ab9b;
+  margin-top: 10px;
+}
+
 .section{
    background-color: #f3f2f4;
    padding-bottom: 2%;
+}
+
+.busca{
+  width: 90%;
+  margin: 0 auto;
 }
 
 .section h1, .section h3{
