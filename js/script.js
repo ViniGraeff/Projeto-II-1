@@ -178,7 +178,39 @@ function cleanAlertInput(){
 	$("#alertInputs").html("");
 }
 
+
+
+// function nomeSearch(name){
+// 	$.get(server, function(data) {//seleciona os dados no json
+// 		for(var i=0; i<data.length; i++){
+			
+// 		}
+		
+// 	});
+// }
+
+// function bla(tagName){
+// 		var i = null;
+// 		$.get(server, function(data){
+// 			for (i = 0; data.length > i; i += 1) {
+// 				if (data[i].nome === tagName) {
+// 					return true;
+// 				}
+// 			}
+			
+// 			return false;
+// 		});
+// 	};
+
+
 function validateForm(saveId){
+	// var tagName = $("#nome").val();
+	// var hasTag = bla(tagName);
+
+	// if(hasTag==false){
+	// 	alert("bla");
+	// }
+
 	if ($("#nome").val()==""){
 		alertInputs("#nome");
 	}
@@ -235,6 +267,12 @@ function actions(){//ações dos botões
 	    if (!this.value.match(/[0-9]/)) {
 	        this.value = this.value.replace(/[^0-9]/g, '');
 	    }
+	});
+	$("#nome").keyup(function(){
+		var regexp = /[^a-zA-Z- ãõáéíóúàèÌòùâêîôûäëïüöÃÕÁÉÍÓÚÀÈÌÒÙÄÜÏÖËÂÊÎÔÛ]/g;
+		if($(this).val().match(regexp)){
+			$(this).val( $(this).val().replace(regexp,'') );
+		}
 	});
 }
 
