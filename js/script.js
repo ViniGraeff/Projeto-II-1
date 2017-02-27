@@ -1,5 +1,4 @@
 var server = "http://192.168.1.172:3000/product/";//servidor com os dados
-var checkName = 0;//variavel para checar de o item ja existe
 
 //limpa a tabela
 function cleanTable(){
@@ -146,7 +145,7 @@ function cleanAlertInput(){
 
 //valida o formulário
 function validateForm(saveId){
-	checkName = 0;
+	var checkName = 0;
 	if($("#nome").val()==""){
 		alertInputs("#nome");
 	}
@@ -160,7 +159,7 @@ function validateForm(saveId){
 		alertInputs("#estoque");
 	}
 	else{//se todos os inputs estão preenchidos, verifica se o nome ja existe
-		nomeSearch(saveId);
+		nomeSearch(saveId, checkName);
 	}
 }
 
@@ -177,7 +176,7 @@ function alertInputs(input){
 }
 
 //procura o nome do produto
-function nomeSearch(saveId){
+function nomeSearch(saveId, checkName){
 	$.get(server, function(data) {
 		for(var i=0; i<data.length; i++){
 			if($("#nome").val().toLowerCase()==data[i].nome.toLowerCase() && saveId!=data[i].id){
@@ -344,14 +343,14 @@ function actions(){
 			$(this).val($(this).val().replace(0,''));
 		}
 	});
-	//quando sair da input, apaga tudo que não é número
-	$('#estoque').blur(function () {
-		if (!this.value.match(/[0-9]/)) {
-			this.value = this.value.replace(/[^0-9]/g, '');
-		}
-	});
 	//permite apenas o que está definido na input
 	$("#nome").keyup(function(){
+		var regexp = /[^a-zA-Z- çãõáéíóúàèÌòùâêîôûäëïüöÃÕÁÉÍÓÚÀÈÌÒÙÄÜÏÖËÂÊÎÔÛ]/g;
+		if($(this).val().match(regexp)){
+			$(this).val( $(this).val().replace(regexp,'') );
+		}
+	});
+	$("#nome").blur(function(){
 		var regexp = /[^a-zA-Z- çãõáéíóúàèÌòùâêîôûäëïüöÃÕÁÉÍÓÚÀÈÌÒÙÄÜÏÖËÂÊÎÔÛ]/g;
 		if($(this).val().match(regexp)){
 			$(this).val( $(this).val().replace(regexp,'') );
@@ -363,7 +362,7 @@ function actions(){
 	});
 	//não permite enter, ponto ou vírgula na busca
 	$('#searchInput').keypress(function(event){
-		if (event.which == 44 || event.which == 46 || event.which == 13) {
+		if (event.which == 46 || event.which == 13) {
 			event.preventDefault();
 		}
 	});
