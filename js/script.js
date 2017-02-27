@@ -10,7 +10,7 @@ function cleanTable(){
 function cleanSearch(){
 	$("#searchResult").html("");
 	$("#searchInput").val("");
-	$(".searchResult").fadeOut("fast").css({"display":"none"});
+	$(".searchResult").css({"display":"none"});
 }
 
 //verifica o status do dado do json
@@ -80,12 +80,26 @@ function createTable(){
 	});
 }
 
-
-//transforma o valor em numero
-function valueToNumber(){//transforma o valor de string para numero, para adicionar no json
-	var valor = $("#valor").val();
-	valor = Number(valor.replace(",", "."));
-	return valor;
+//seleciona o id na tabela através dos botões de editar e deletar
+function getId(){
+	$("#rowsTable").on('click', '.delBtn', function(){//no clique do botão deletar na tabela, pega o id da linha
+		var id = $(this).parents('tr').data('id');
+		setIdModalDel(id);//seta o id da linha no modal de deletar
+	});
+	$("#rowsTable").on('click', '.editBtn', function(){//no clique do botão editar na tabela, pega o id da linha
+		var id = $(this).parents('tr').data('id');
+		setIdModalEdit(id);//seta o id da linha no modal de edição
+		inputsModalEdit(id);//preenche os inputs no modal de edição
+	});
+	$("#searchResult").on('click', '.delSearchBtn', function(){//no clique do botão deletar na tabela, pega o id da linha
+		var id = $(this).parents('.well').data('id');
+		setIdModalDel(id);//seta o id da linha no modal de deletar	
+	});
+	$("#searchResult").on('click', '.editSearchBtn', function(){//no clique do botão editar na tabela, pega o id da linha
+		var id = $(this).parents('.well').data('id');
+		setIdModalEdit(id);//seta o id da linha no modal de edição
+		inputsModalEdit(id);//preenche os inputs no modal de edição
+	});
 }
 
 //define as características dos inputs do modal de adicionar
@@ -94,12 +108,6 @@ function inputsModalAdd(){
 	$("#status").val("A");//define o status inicial como ativo
 	$("#saveBtn").data('item', "");//define o botão de salvar com o id nulo
 	cleanAlertInput();//limpa o alerta se houver
-}
-
-//define o id do modal e do botão
-function setIdModalEdit(id){
-	$("#dataModal").data('item', id);
-	$("#saveBtn").data('item', id);
 }
 
 //define as características dos inputs do modal de editar
@@ -113,9 +121,99 @@ function inputsModalEdit(id){
 	cleanAlertInput();//limpa o alerta se houver
 }
 
+//define o id do modal e do botão
+function setIdModalEdit(id){
+	$("#dataModal").data('item', id);
+	$("#saveBtn").data('item', id);
+}
+
 //define o id do modal de deletar
 function setIdModalDel(id){
 	$("#deleteModal").data('item', id);
+}
+
+//define os títulos dos modais e dos botões de salvar
+function modalTitles(title, button){
+	$("#titleModal").html(title);//cria o título do modal editar/adicionar
+	$("#saveBtn").val(button);//cria o titulo do botão de salvar
+}
+
+//limpa o alerta das inputs
+function cleanAlertInput(){
+	$("#nome, #valor, #status, #estoque").css({"border": "1px solid #ccc"});
+	$("#alertInputs").html("");
+}
+
+//valida o formulário
+function validateForm(saveId){
+	checkName = 0;
+	if($("#nome").val()==""){
+		alertInputs("#nome");
+	}
+	else if ($("#valor").val()==""){
+		alertInputs("#valor");
+	}
+	else if ($("#status").val()==""){
+		alertInputs("#status");
+	}
+	else if ($("#estoque").val()==""){
+		alertInputs("#estoque");
+	}
+	else{//se todos os inputs estão preenchidos, verifica se o nome ja existe
+		nomeSearch(saveId);
+	}
+}
+
+//cria um alerta para as inputs dentro do modal
+function alertInputs(input){
+	if(input!=""){
+		$(input).css({"border":"1px solid red"});
+		$("#alertInputs").html("Todos os campos devem ser preenchidos!");
+	}
+	else{
+		$("#nome").css({"border":"1px solid red"});
+		$("#alertInputs").html("Item já cadastrado!");
+	}
+}
+
+//procura o nome do produto
+function nomeSearch(saveId){
+	$.get(server, function(data) {
+		for(var i=0; i<data.length; i++){
+			if($("#nome").val().toLowerCase()==data[i].nome.toLowerCase() && saveId!=data[i].id){
+				alertInputs("");//se o nome já existe, alerta de item ja cadastado
+				checkName = 1;
+			}
+		}
+		if(checkName==0){//se o nome não existe, fecha o modal
+			closeModal(saveId);
+		}
+	});
+}
+
+//fecha o modal
+function closeModal(saveId){
+		$("#dataModal").fadeOut();
+		setTimeout(function(){
+			$('#dataModal').modal("hide");
+		});
+		checkSave(saveId);//verifica o id do botão de salvar
+}
+
+//verifica o id do botão de salvar
+function checkSave(saveId){
+	if (saveId == ""){//se o id for vazio, é pra adicionar
+		addJson();
+	}else{//se o id não for vazio, é pra editar
+		editJson(saveId);
+	}
+}
+
+//transforma o valor em numero
+function valueToNumber(){//transforma o valor de string para numero, para adicionar no json
+	var valor = $("#valor").val();
+	valor = Number(valor.replace(",", "."));
+	return valor;
 }
 
 //função com os parâmetros de deletar
@@ -164,103 +262,41 @@ function alertMsg(mensagem){
 	}, 2500);
 }
 
-//seleciona o id na tabela através dos botões de editar e deletar
-function getId(){
-	$("#rowsTable").on('click', '.delBtn', function(){//no clique do botão deletar na tabela, pega o id da linha
-		var id = $(this).parents('tr').data('id');
-		setIdModalDel(id);//seta o id da linha no modal de deletar
-	});
-	$("#rowsTable").on('click', '.editBtn', function(){//no clique do botão editar na tabela, pega o id da linha
-		var id = $(this).parents('tr').data('id');
-		setIdModalEdit(id);//seta o id da linha no modal de edição
-		inputsModalEdit(id);//preenche os inputs no modal de edição
-	});
-	$("#searchResult").on('click', '.delSearchBtn', function(){//no clique do botão deletar na tabela, pega o id da linha
-		var id = $(this).parents('.well').data('id');
-		setIdModalDel(id);//seta o id da linha no modal de deletar	
-	});
-	$("#searchResult").on('click', '.editSearchBtn', function(){//no clique do botão editar na tabela, pega o id da linha
-		var id = $(this).parents('.well').data('id');
-		setIdModalEdit(id);//seta o id da linha no modal de edição
-		inputsModalEdit(id);//preenche os inputs no modal de edição
-	});
-}
 
-//define os títulos dos modais e dos botões de salvar
-function modalTitles(title, button){
-	$("#titleModal").html(title);//cria o título do modal editar/adicionar
-	$("#saveBtn").val(button);//cria o titulo do botão de salvar
-}
-
-//verifica o id do botão de salvar
-function checkSave(saveId){
-	if (saveId == ""){//se o id for vazio, é pra adicionar
-		addJson();
-	}else{//se o id não for vazio, é pra editar
-		editJson(saveId);
-	}
-}
-
-//cria um alerta para as inputs dentro do modal
-function alertInputs(input){
-	if(input!=""){
-		$(input).css({"border":"1px solid red"});
-		$("#alertInputs").html("Todos os campos devem ser preenchidos!");
-	}
-	else{
-		$("#nome").css({"border":"1px solid red"});
-		$("#alertInputs").html("Item já cadastrado!");
-	}
-}
-
-//limpa o alerta das inputs
-function cleanAlertInput(){
-	$("#nome, #valor, #status, #estoque").css({"border": "1px solid #ccc"});
-	$("#alertInputs").html("");
-}
-
-//procura o nome do produto
-function nomeSearch(saveId){
-	$.get(server, function(data) {
-		for(var i=0; i<data.length; i++){
-			if($("#nome").val().toLowerCase()==data[i].nome.toLowerCase() && saveId!=data[i].id){
-				alertInputs("");//se o nome já existe, alerta de item ja cadastado
-				checkName = 1;
-			}
+//função de busca
+function search(){
+	$('#searchInput').keyup(function(){//quando escrever na input, realiza a busca
+		var searchField = $(this).val();
+		if(searchField === '')  {//se não houver nada no campo de busca, esconde a div de resultados
+			$(".searchResult").fadeOut("fast").css({"display":"none"});
+			return;
 		}
-		if(checkName==0){//se o nome não existe, fecha o modal
-			closeModal(saveId);
-		}
-	});
-}
 
-//fecha o modal
-function closeModal(saveId){
-		$("#dataModal").fadeOut();
-		setTimeout(function(){
-			$('#dataModal').modal("hide");
+		var regex = new RegExp(searchField, "i");//define a busca sem case sensitive
+		var output = '<div class="row busca" id="rowBusca">';//cria a div para mostras os resultados
+
+		$.get(server, function(data){//procura os dados
+			$(data).each(function (){//percorre um por um
+				var nome = this.nome;
+				var status;
+				if (nome.search(regex) != -1){//se houver dados correspondentes à busca
+					//muda o nome do status
+					var status = verifyStatus(this.status);
+					//mostra a div de resultados e printa 
+					$(".searchResult").fadeIn("fast").css({"display":"block"});	
+					output += "<div class='col-md-10 col-md-offset-1 well' data-id="+ this.id+">"+
+					"<div class='col-md-2'><h4>" + nome + "</h4></div>"+
+					"<div class='col-md-2'><h4>Preço: " + valueToString(this.valor) + "</h4></div>"+
+					"<div class='col-md-2'><h4>Status: "+ status +"</h4></div>"+
+					"<div class='col-md-4'><h4>Estoque: "+ this.estoque +"</h4></div>"+
+					"<div class='col-md-2 column-btn'><button data-toggle='modal' data-target='#dataModal' class='editSearchBtn btn-busca col-md-6'><span class='glyphicon glyphicon-pencil'></span></button>"+
+					"<button data-toggle='modal' data-target='#deleteModal' class='delSearchBtn btn-busca col-md-6'><span class='glyphicon glyphicon-trash'></span></button></div></div>";
+				}
+			});
+			output += '</div>';
+			$('#searchResult').html(output);//define a div com os resultados
 		});
-		checkSave(saveId);//verifica o id do botão de salvar
-}
-
-//valida o formulário
-function validateForm(saveId){
-	checkName = 0;
-	if($("#nome").val()==""){
-		alertInputs("#nome");
-	}
-	else if ($("#valor").val()==""){
-		alertInputs("#valor");
-	}
-	else if ($("#status").val()==""){
-		alertInputs("#status");
-	}
-	else if ($("#estoque").val()==""){
-		alertInputs("#estoque");
-	}
-	else{//se todos os inputs estão preenchidos, verifica se o nome ja existe
-		nomeSearch(saveId);
-	}
+	});
 }
 
 //ações dos botões/inputs
@@ -337,42 +373,6 @@ function actions(){
 function maskValor(){
 	$('#valor').priceFormat({
 		prefix: '', centsSeparator: ',', thousandsSeparator: ''
-	});
-}
-
-//função de busca
-function search(){
-	$('#searchInput').keyup(function(){//quando escrever na input, realiza a busca
-		var searchField = $(this).val();
-		if(searchField === '')  {//se não houver nada no campo de busca, esconde a div de resultados
-			$(".searchResult").fadeOut("fast").css({"display":"none"});
-			return;
-		}
-
-		var regex = new RegExp(searchField, "i");//define a busca sem case sensitive
-		var output = '<div class="row busca" id="rowBusca">';//cria a div para mostras os resultados
-
-		$.get(server, function(data){//procura os dados
-			$(data).each(function (){//percorre um por um
-				var nome = this.nome;
-				var status;
-				if (nome.search(regex) != -1){//se houver dados correspondentes à busca
-					//muda o nome do status
-					var status = verifyStatus(this.status);
-					//mostra a div de resultados e printa 
-					$(".searchResult").fadeIn("fast").css({"display":"block"});	
-					output += "<div class='col-md-10 col-md-offset-1 well' data-id="+ this.id+">"+
-					"<div class='col-md-2'><h4>" + nome + "</h4></div>"+
-					"<div class='col-md-2'><h4>Preço: " + valueToString(this.valor) + "</h4></div>"+
-					"<div class='col-md-2'><h4>Status: "+ status +"</h4></div>"+
-					"<div class='col-md-4'><h4>Estoque: "+ this.estoque +"</h4></div>"+
-					"<div class='col-md-2 column-btn'><button data-toggle='modal' data-target='#dataModal' class='editSearchBtn btn-busca col-md-6'><span class='glyphicon glyphicon-pencil'></span></button>"+
-					"<button data-toggle='modal' data-target='#deleteModal' class='delSearchBtn btn-busca col-md-6'><span class='glyphicon glyphicon-trash'></span></button></div></div>";
-				}
-			});
-			output += '</div>';
-			$('#searchResult').html(output);//define a div com os resultados
-		});
 	});
 }
 
