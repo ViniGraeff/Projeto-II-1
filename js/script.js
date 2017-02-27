@@ -1,4 +1,4 @@
-var server = "http://localhost:3000/product/";//servidor com os dados
+var server = "http://192.168.1.172:3000/product/";//servidor com os dados
 var checkName = 0;//variavel para checar de o item ja existe
 
 //limpa a tabela
@@ -7,7 +7,7 @@ function cleanTable(){
 }
 
 //limpa o campo de busca e os resultados
-function searchClean(){
+function cleanSearch(){
 	$("#searchResult").html("");
 	$("#searchInput").val("");
 	$(".searchResult").fadeOut("fast").css({"display":"none"});
@@ -51,7 +51,7 @@ function valueToString(valor){//transforma o valor de numero para string para co
 function createTable(){
 	var statusSelected = checkStatusSelect($("#selectStatus").val());//checa que dado está selecionado
 	cleanTable();//limpa a tabela para atualizar
-	searchClean();//limpa a busca
+	cleanSearch();//limpa a busca
 	$.get(server, function(data) {//seleciona os dados no json
 		for(var i=0; i<data.length; i++){//percorre todos os dados
 			var valor = valueToString(data[i].valor);//transforma o valor em string
@@ -300,9 +300,9 @@ function actions(){
 		cleanAlertInput();//limpa o alerta se houver, definindo a cor inicial
 	});
 	//permite apenas numeros na input estoque
-	$('#estoque').keyup(function () {
-		if (this.value.match(/[0-9]/)) {
-			this.value = this.value.replace(/[^0-9]/g, '');
+	$('#estoque').keypress(function (event) {
+		if ((event.which < 48 || event.which > 57)) {
+			event.preventDefault();
 		}
 		if ($(this).val().indexOf(0) == 0) {
 			$(this).val($(this).val().replace(0,''));
@@ -358,12 +358,7 @@ function search(){
 				var status;
 				if (nome.search(regex) != -1){//se houver dados correspondentes à busca
 					//muda o nome do status
-					if(this.status=="A"){
-						status = "Ativo";
-					}
-					else{
-						status = "Inativo";
-					}
+					var status = verifyStatus(this.status);
 					//mostra a div de resultados e printa 
 					$(".searchResult").fadeIn("fast").css({"display":"block"});	
 					output += "<div class='col-md-10 col-md-offset-1 well' data-id="+ this.id+">"+
